@@ -87,10 +87,10 @@ printf("Hello World");
 ```
 
 ## Embeding Gist
-{% gist 5555251 %}
+{% gist eb77d7eb17888764f57f07465482006e %}
 
 
-![walking]({{ site.baseurl }}/assets/images/8.jpg)
+![walking]({{ site.baseurl }}/assets/images/12.jpg)
 
 ## Reference lists
 
