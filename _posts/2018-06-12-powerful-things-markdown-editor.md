@@ -86,7 +86,8 @@ puts markdown.to_html
 printf("Hello World");
 ```
 
-
+## Embeding Gist
+{% gist 5555251 %}
 
 
 ![walking]({{ site.baseurl }}/assets/images/8.jpg)

@@ -80,7 +80,7 @@ Now we have the OkHttp Client and Cache, we can construct the Apollo client obje
 
 ```java
 apolloClient = ApolloClient._builder_()  
-        .serverUrl(_BASE\_URL_)  
+        .serverUrl(_BASE_URL_)  
         .okHttpClient(okHttpClient)  
         .normalizedCache(normalizedCacheFactory, cacheKeyResolver)  
         .build();
@@ -95,7 +95,7 @@ In our sample app apollo generated **FeedQuery class** from our sample .graphql
 
 ```java
 FeedQuery feedQuery = FeedQuery._builder_()  
-        .limit(_FEED\_SIZE_)  
+        .limit(_FEED_SIZE_)  
         .type(FeedType._HOT_)  
         .build();
 ```
