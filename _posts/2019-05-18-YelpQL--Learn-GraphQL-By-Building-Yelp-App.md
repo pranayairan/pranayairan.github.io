@@ -8,7 +8,7 @@ author: pranay
 date: '2019-05-18T17:39:35.278Z'
 categories: [ GraphQL, Android, Tutorial ]
 keywords: [GraphQL, Android, Tutorial, Apollo Android, Apollo GraphQL, Yelp API, Yelp GraphQL]
-image: assets/images/12.jpg
+image: https://cdn-images-1.medium.com/max/1200/1*Av9FavOvzFcxp8e1JW54HQ.png
 featured: true
 hidden: true
 ---

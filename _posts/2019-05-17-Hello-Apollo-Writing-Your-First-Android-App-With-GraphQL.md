@@ -8,7 +8,6 @@ description: >-
 date: '2019-05-17T17:39:35.278Z'
 categories: [ GraphQL, Android, Tutorial ]
 keywords: [GraphQL, Android, Tutorial, Apollo Android, Apollo GraphQL]
-image: https://cdn-images-1.medium.com/max/2560/1*uKVfsFREG2HMCL8hJdcZ5Q.jpeg
 featured: true
 hidden: true
 ---
