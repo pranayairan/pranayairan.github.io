@@ -2,9 +2,7 @@
 layout: post
 title: Hello Apollo Writing Your First Android App With GraphQL
 author: pranay
-description: >-
-  Create your first GraphQL Android App with Apollo Android and explore how
-  GrahQL can make your app fast.
+description: Create your first GraphQL Android App with Apollo Android and explore how GrahQL can make your app fast.
 date: '2019-05-17T17:39:35.278Z'
 categories: [ GraphQL, Android, Tutorial ]
 keywords: [GraphQL, Android, Tutorial, Apollo Android, Apollo GraphQL]
@@ -34,11 +32,15 @@ Now we know what is GraphQL and how Apollo Android works let’s see how we can 
 
 Create an empty android project if you don’t already have one. Now in your project level **build.gradle** file add this line
 
+```ruby
 classpath 'com.apollographql.apollo:gradle-plugin:0.3.2'
+```
 
 this should be placed after **com.android.tools.** Now open your app’s **build.gradle** and add this line on top
 
+```ruby
 apply plugin: 'com.apollographql.android'
+```
 
 this should go below **com.android.application,** if you want to use apollo for your Kotlin project, add apollo plugin before you kotlin plugin. With this 2 dependencies, we added apollo in our app.
 
@@ -62,22 +64,27 @@ Apollo uses [OkHTTP](http://square.github.io/okhttp/) as its networking client, 
 
 > Add all require headers for your api in okhttp client
 
+```java
 OkHttpClient okHttpClient = new OkHttpClient.Builder()  
         .addInterceptor(logging)  
         .build();
+```
 
 If you want to enable caching, apollo comes with 3 level of cache, read more about caching here [https://github.com/apollographql/apollo-android](https://github.com/apollographql/apollo-android). If you decide to use caching you will need to add the following dependency.
 
+```ruby
 compile "com.apollographql.apollo:apollo-android-support:0.3.2"
+```
 
 Now we have the OkHttp Client and Cache, we can construct the Apollo client object.
 
+```java
 apolloClient = ApolloClient._builder_()  
         .serverUrl(_BASE\_URL_)  
         .okHttpClient(okHttpClient)  
         .normalizedCache(normalizedCacheFactory, cacheKeyResolver)  
         .build();
-
+```
 Cache part is **optional**, Once apollo client is build, you can use the same client for all your network request.
 
 ### First GraphQL Request
@@ -86,20 +93,23 @@ In our sample app apollo generated **FeedQuery class** from our sample .graphql
 
 **Build query passing all the parameters**
 
+```java
 FeedQuery feedQuery = FeedQuery._builder_()  
         .limit(_FEED\_SIZE_)  
         .type(FeedType._HOT_)  
         .build();
+```
 
 **Limit and Type** are dynamic parameters in our graphQL queries, apollo automatically create setters for those parameters enabling us to pass the values from our Java code.
 
 **Create ApolloCall.**
 
-ApolloCall<FeedQuery.Data> githuntFeedCall = apolloClient  
-                                             .query(feedQuery);
-
+```java
+ApolloCall<FeedQuery.Data> githuntFeedCall = apolloClient.query(feedQuery);
+```
 Apollo supports both normal **callback** and **RxJava.** Sample app will have 2 API 1 consumed via a normal callback and 1 via RxJava. For the article let’s see how the callback method works.
 
+```java
 githuntFeedCall.enqueue(new ApolloCall.Callback<FeedQuery.Data>() {  
     @Override  
     public void onResponse(@Nonnull Response<FeedQuery.Data> response) {  
@@ -111,6 +121,7 @@ githuntFeedCall.enqueue(new ApolloCall.Callback<FeedQuery.Data>() {
   
     }  
 });
+```
 
 To use the normal callback method, all you need to do is call enqueue with a callback, similar style as retrofit.
 
@@ -122,4 +133,4 @@ You can find a complete working sample app here [https://github.com/apollographq
 
 So I modified the sample app and removed all the project level dependencies, a fully working app with apollo and GraphQL can be found here [https://github.com/pranayairan/HelloApolloAndroid](https://github.com/pranayairan/HelloApolloAndroid)
 
-_Cross Posted From Medium https://android.jlelse.eu/hello-apollo-writing-your-first-android-app-with-graphql-d8edabb35a2_
+_Cross Posted From Medium [https://android.jlelse.eu/hello-apollo-writing-your-first-android-app-with-graphql-d8edabb35a2_](https://android.jlelse.eu/hello-apollo-writing-your-first-android-app-with-graphql-d8edabb35a2_)
