@@ -13,7 +13,6 @@ featured: true
 hidden: true
 ---
 
-![Design inspiration from: [https://medium.com/hh-design/an-unsolicited-app-redesign-yelp-396c41947776](https://medium.com/hh-design/an-unsolicited-app-redesign-yelp-396c41947776)](https://cdn-images-1.medium.com/max/1200/1*Av9FavOvzFcxp8e1JW54HQ.png)
 Design inspiration from: [https://medium.com/hh-design/an-unsolicited-app-redesign-yelp-396c41947776](https://medium.com/hh-design/an-unsolicited-app-redesign-yelp-396c41947776)
 
 One of the best way to learn new technology is to build something. This technique is super effective and I have learned a lot by building apps and releasing it to users.
@@ -160,4 +159,4 @@ We saw some of the gotchas that I learned while developing this app and how it c
 
 You can find the complete source code of a working Yelp App on my repo [https://github.com/pranayairan/YelpQL](https://github.com/pranayairan/YelpQL)
 
-_If you liked this article, click the💚 below so other people will see this here on Medium._
+_Cross Posted From Medium https://android.jlelse.eu/yelpql-learn-graphql-by-building-yelp-app-da2a71f16c77_

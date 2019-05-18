@@ -8,11 +8,10 @@ description: >-
 date: '2019-05-17T17:39:35.278Z'
 categories: [ GraphQL, Android, Tutorial ]
 keywords: [GraphQL, Android, Tutorial, Apollo Android, Apollo GraphQL]
+image: https://cdn-images-1.medium.com/max/2560/1*uKVfsFREG2HMCL8hJdcZ5Q.jpeg
 featured: true
 hidden: true
 ---
-
-![](https://cdn-images-1.medium.com/max/2560/1*uKVfsFREG2HMCL8hJdcZ5Q.jpeg)
 
 If you are a mobile developer, you understand the importance of faster API and faster apps. Especially in countries where data is costly, it becomes important to get only required data.
 
@@ -123,4 +122,4 @@ You can find a complete working sample app here [https://github.com/apollographq
 
 So I modified the sample app and removed all the project level dependencies, a fully working app with apollo and GraphQL can be found here [https://github.com/pranayairan/HelloApolloAndroid](https://github.com/pranayairan/HelloApolloAndroid)
 
-_If you liked this article, click the💚 below so other people will see this here on Medium._
+_Cross Posted From Medium https://android.jlelse.eu/hello-apollo-writing-your-first-android-app-with-graphql-d8edabb35a2_
