@@ -133,4 +133,4 @@ You can find a complete working sample app here [https://github.com/apollographq
 
 So I modified the sample app and removed all the project level dependencies, a fully working app with apollo and GraphQL can be found here [https://github.com/pranayairan/HelloApolloAndroid](https://github.com/pranayairan/HelloApolloAndroid)
 
-_Cross Posted From Medium [https://android.jlelse.eu/hello-apollo-writing-your-first-android-app-with-graphql-d8edabb35a2_](https://android.jlelse.eu/hello-apollo-writing-your-first-android-app-with-graphql-d8edabb35a2_)
+_Cross Posted From Medium [https://android.jlelse.eu/hello-apollo-writing-your-first-android-app-with-graphql-d8edabb35a2](https://android.jlelse.eu/hello-apollo-writing-your-first-android-app-with-graphql-d8edabb35a2)_

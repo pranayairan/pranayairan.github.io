@@ -163,4 +163,4 @@ We saw some of the gotchas that I learned while developing this app and how it c
 
 You can find the complete source code of a working Yelp App on my repo [https://github.com/pranayairan/YelpQL](https://github.com/pranayairan/YelpQL)
 
-_Cross Posted From Medium [https://android.jlelse.eu/yelpql-learn-graphql-by-building-yelp-app-da2a71f16c77_](https://android.jlelse.eu/yelpql-learn-graphql-by-building-yelp-app-da2a71f16c77_)
+_Cross Posted From Medium [https://android.jlelse.eu/yelpql-learn-graphql-by-building-yelp-app-da2a71f16c77](https://android.jlelse.eu/yelpql-learn-graphql-by-building-yelp-app-da2a71f16c77)_
