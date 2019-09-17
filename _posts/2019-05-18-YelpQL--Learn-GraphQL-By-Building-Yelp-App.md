@@ -90,13 +90,13 @@ Now we have the query and Apollo generated the concrete class, let’s make the 
 Apollo will convert all the parameters into fields that can be set at the time of constructing the queries. Let’s construct our Search query:
 
 ```java
-final SearchYelp searchYelp = SearchYelp._builder_()  
-        .term(searchTerm)  
-        .latitude(latitude)  
-        .longitude(longitude)  
-        .radius(10000d)  
-        .offset(offset)  
-        .build();
+  final SearchYelp searchYelp = SearchYelp._builder_()  
+          .term(searchTerm)  
+          .latitude(latitude)  
+          .longitude(longitude)  
+          .radius(10000d)  
+          .offset(offset)  
+          .build();
 ```
 
 To construct a query, we will create the object of our query class that apollo generated using the builder.
@@ -106,7 +106,7 @@ All parameters that are defined in the **GraphQL query** then can be set making 
 To make network call using Apollo, we will create an **apollo client** object defining the URL and setting all the required headers. **Apollo uses OKHTTP** as it’s HTTP layer, so all headers will be defined using okhttp client object. Check [this file](https://github.com/pranayairan/YelpQL/blob/master/app/src/main/java/binarybricks/com/yelpql/network/GraphQLClient.java) for the complete code.
 
 ```java
-ApolloQueryCall<SearchYelp.Data> query = apolloClient.query(searchYelp);
+  ApolloQueryCall<SearchYelp.Data> query = apolloClient.query(searchYelp);
 ```
 
 Once we have the Apollo client, we can call **.query** passing our query to get ApolloQueryCall object. This object will be then used for making the final request.
@@ -114,7 +114,7 @@ Once we have the Apollo client, we can call **.query** passing our query to get
 Apollo supports both **RXJava2 calls** and **straight call backs.** If you want to use straight callbacks you can just call **enqueue** on ApolloQueryCall object similar to Retrofit. But if you want RXJava calls you need to add this dependency and **wrap your query into Rx2Apollo.from** the  method. This returns a **RxJava2 Single**.
 
 ```ruby
-compile 'com.apollographql.apollo:apollo-rx2-support:0.3.2'
+  compile 'com.apollographql.apollo:apollo-rx2-support:0.3.2'
 ```
 
 Check [SearchAPI.java](https://github.com/pranayairan/YelpQL/blob/master/app/src/main/java/binarybricks/com/yelpql/network/SearchAPI.java) for complete network call for our search query. Once we have the response, we will add it to our adapter and display the list. We also added support for infinite scrolling since API restricts the number of businesses in the response.
