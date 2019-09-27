@@ -8,7 +8,7 @@ categories: [ Testing, Android ]
 keywords: [Testing, Android, Roboelectric, Unit test, Test Sharding, Junit Categories]
 image: assets/images/parallel.jpg
 featured: true
-hidden: false
+hidden: true
 ---
 As mobile apps are getting more complex so are the code written to test the functionality. Testing on android involves various layers and there are multiple tools to test specific layer but broadly we can categorize these tests into 3 buckets. 
 
