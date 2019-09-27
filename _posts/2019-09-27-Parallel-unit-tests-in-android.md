@@ -89,7 +89,7 @@ JUnit 4.12 introduced a nifty feature called **Categories **. With Categories we
 
 Though this seems simple, there is no straight forward support for Junit Category in Gradle and Gradle Android. We need to write a custom gradle task to make it work. Let's look at the code. 
 
-Sample Android app with Unit Test Sharding using Junit  `Categories` can be found here https://github.com/pranayairan/android-unit-test-sharding
+Sample Android app with Unit Test Sharding using Junit  `Categories` can be found here [https://github.com/pranayairan/android-unit-test-sharding](https://github.com/pranayairan/android-unit-test-sharding)
 
 ### Marker Interface 
 To represent the categories we need to create marker interfaces. This is simple interfaces that we will use to differentiate between various test types. Here is how I defined interfaces for my app
@@ -165,7 +165,7 @@ Sharding is not a new concept and people are doing it in UI testing by using too
 
 In this post, we saw how we can take advantage of **Junit Categories** to shard our unit test and run them using a custom gradle command. 
 
-I created a sample app that shard unit tests into 3 different categories. You can find the complete source code at https://github.com/pranayairan/android-unit-test-sharding
+I created a sample app that shard unit tests into 3 different categories. You can find the complete source code at  [https://github.com/pranayairan/android-unit-test-sharding](https://github.com/pranayairan/android-unit-test-sharding)
 
 _I would like to give shot out to my Colleague [Martin Feldsztejn](https://github.com/martofeld) who wrote the custom gradle command to get categories to work in android. I would also like to thanks Sriram Santosh for proofreading this and providing his feedback_
 
