@@ -1,26 +1,31 @@
 ---
 layout: post
 title: 'Parallel Unit Tests in Android'
-description:  Running Unit Test and Robo Electric tests in parallel is hard in Android. We can simplify this by using Junit Categories and a custom gradle task. This article shows how we can shard the unit test on android using jUnit categories. 
+description:  Running Unit Test and Robo Electric tests in parallel is hard in Android. We can simplify it by using JUnit Categories and custom gradle commands. This article shows how we can shard the unit tests and save time by running them in parallel.
 author: pranay
-date: '2019-09-26T20:30:35.278Z'
+date: '2019-09-29T11:30:35.278Z'
 categories: [ Testing, Android ]
-keywords: [Testing, Android, Roboelectric, Unit test, Test Sharding, Junit Categories]
+keywords: [Testing, Android, Robolectric, Unit test, Test Sharding, JUnit Categories]
 image: assets/images/parallel.jpg
 featured: true
 hidden: true
 ---
-As mobile apps are getting more complex so are the code written to test the functionality. Testing on android involves various layers and there are multiple tools to test specific layer but broadly we can categorize these tests into 3 buckets. 
+
+> ***TL;DR** Our unit tests were taking a lot of time to run and there was no way to shard them and run in parallel. We found a way to use **JUnit Categories** and custom gradle command to shard our tests and reduce test execution time by half.*
+
+Unit tests are the fundamental tests in our app testing strategy. But the more tests we write, the more time it takes to execute them and for a code to merge. 
+
+Android apps have various layers and we can test each layer using different tools. But we can categorize these tests into 3 buckets. 
 
  1. Unit Test (fast, runs on JVM)
  2. UI test (slow, runs using an emulator)
- 3. RoboElectric test (moderately fast, runs on JVM with simulated android env)
+ 3. Robolectric test (moderate, runs on JVM with simulated android env)
 
-JVM tests usually run super fast, but as project complexity grows, the test suit becomes bigger and slower. On Android, all unit test runs **Sequentally**. The larger the test suits the longer it will take for them to complete. 
+JVM tests usually run super fast but on android, all unit test runs **Sequentially**, the more tests we write, the longer it will take to execute them. 
 
-With project [Nitrogen](https://medium.com/androiddevelopers/write-once-run-everywhere-tests-on-android-88adb2ba20c5) and Roboelectric 4, it has become easier to write RoboElectric tests to test the UI behavior. RoboElectric tests are faster than UI test and run on JVM, but since it depends on simulated android env, these tests are usually slower than vanilla Junit tests. 
+With project [Nitrogen](https://medium.com/androiddevelopers/write-once-run-everywhere-tests-on-android-88adb2ba20c5), Robolectric tests are now supported in the Android X testing library. Robolectric tests run on JVM and are faster then espresso tests. But since they depend on simulated android env they are slower than vanilla JUnit tests.
 
-As our android apps start growing in complexity, the test execution starts slowing impacting overall build performance and developer productivity.  There are ways in gradle to execute the unit test in parallel by setting 
+Combining Robolectric and JUnit test makes test execution slow and can impact build time and developer productivity. Gradle has support for executing tests in parallel using a custom setting like this: 
 
    ``` groovy
 tasks.withType(Test) {
@@ -28,17 +33,18 @@ tasks.withType(Test) {
     }
 ```
 
-This options is rigid and can crash your build machine. 
+But this option is rigid and can cause a crash in our build machine.
 
-To get the most advantage of your build machine and CI we need to **Shard** this tests into multiple parallel executions. For example, we can shard the tests into 2, one running just unit test and other shard running RoboElectric test in parallel reducing the overall test time. 
+Modern CI systems come with support for parallel builds. To get most out of our CI, we need a way to **Shard** our tests and execute them in parallel. For ex: we can divide our unit tests into 2 parts (**Robolectric and pure JVM**) and run them in parallel cutting test execution time in half. 
 
-> **Sharding** is splitting the test suite into multiple threads, so they can be easily run as a group. 
 
-Unfortunately Android and Gradle don't allow an easy way to shard or break your tests. In this post, we will discuss 2 different approaches we can use to achieve this. 
+> **Sharding** is splitting the test suite into multiple threads, so they run as a group. 
 
-##  Command line options
+Unfortunately Android and Gradle don't have an easy way to shard or break tests. In this post, we will discuss 2 different approaches we can use to achieve this. 
 
-This is the most simple option available with **gradle**, when it comes to executing 1 test, all tests in a class or a package of tests. 
+##  Command line
+Command-line parameters are the most simple option available with **gradle**, when it comes to executing 1 test, all tests in a class or a package. 
+
 Let's take an example test class 
 
 ```kotlin
@@ -61,51 +67,52 @@ class ConverterUtilTest {
 }
 ```
 ### Executing Single Test
-**testConvertFahrenheitToCelsius**  can be executed with this command
-```
+We can execute single test like **testConvertFahrenheitToCelsius**  with this command
+```shell
  ./gradlew :ProjectName:testVariantNameUnitTest --tests com.dexterapps.testsharding.ConverterUtilTest.testConvertFahrenheitToCelsius
-
 ```
-Relpace `:ProjectName:testVariantNameUnitTest` with yours like  `:app:testDebugUnitTest` or the variant you like to test.
+Relpace `:ProjectName:testVariantNameUnitTest` with yours. Like  `:app:testDebugUnitTest` or the variant you will like to test. 
 
 
 ### Executing all tests in class
-To run all tests in a class like **ConverterUtilTest** we can run this command
-```
+To run all tests in a class **ConverterUtilTest** we can run
+```shell
 ./gradlew :ProjectName:testVariantNameUnitTest --tests com.dexterapps.testsharding.ConverterUtilTest
 ```
 
 ### Executing all tests in a package
-To run all tests in a package like **com.dexterapps.testsharding** we can run this command
-```
+To run all tests in a package **com.dexterapps.testsharding** we can
+```shell
 ./gradlew :ProjectName:testVariantNameUnitTest --tests com.dexterapps.testsharding.*
 ```
-Even though this option works for a lot of cases, the downside of this approach is each engineer would need to set up something on their machine whether that's a run configuration in Android Studio or a shell script, etc. 
+Command line options work for a lot of cases but as a downside, each engineer would need to set up there own Android Studio run config or shell script. 
 
-This approach also doesn't help us to **Shard** the test cleanly.  Say if we want to just separate **unit test** and **roboelectric test**  we need to force everyone to put this test in specific package or something similar.  Let's look at another approach that might give us the flexibility we need. 
+This approach doesn't **Shard** the tests. Let's say if we want to separate **Robolectric** and **JVM** tests, we need to use specific packages, forcing everyone to put tests in diff package from where they belong canonically. 
 
-##  Junit Categories
-JUnit 4.12 introduced a nifty feature called **Categories **. With Categories we can organize the test cases into different categories, label them and run those categorized test cases. 
+Can we do better? Yes, we can, Let's look at another approach that gives us the flexibility we need. 
 
-Though this seems simple, there is no straight forward support for Junit Category in Gradle and Gradle Android. We need to write a custom gradle task to make it work. Let's look at the code. 
+##  JUnit Categories
+JUnit 4.12 introduced a nifty feature **Categories**. Categories provide us with a mechanism to label and group tests and run these tests either by including or excluding the categories. 
 
-Sample Android app with Unit Test Sharding using Junit  `Categories` can be found here [https://github.com/pranayairan/android-unit-test-sharding](https://github.com/pranayairan/android-unit-test-sharding)
+JUnit categories are simple but there is no direct support for it in Gradle or Gradle Android. We need to write a custom Gradle code to make it work. Let's look at the code. 
+
+> You can download all the code discussed in this post from
+> [https://github.com/pranayairan/android-unit-test-sharding](https://github.com/pranayairan/android-unit-test-sharding)
 
 ### Marker Interface 
-To represent the categories we need to create marker interfaces. This is simple interfaces that we will use to differentiate between various test types. Here is how I defined interfaces for my app
+To represent the categories or label tests, we need to create marker interfaces. This simple interfaces will be will use to classify our tests and run them in parallel. 
+
 ```kotlin
-interface RoboElectricTests
+interface RobolectricTests
 
 interface UnitTests
 
 interface FastTests
 
 interface SlowTests
-```
-This interface will represent different categories that we will use to classify our tests. 
-
+``` 
 ### Category Example
-Once we have a marker interface, it is trivial to add them as categories. We just need to annotate tests we want to categorize with `@category` annotation. Let's look at an example
+Once we have marker interfaces, it is trivial to add them as categories. To categorize a test annotate it with `@category` annotation and add interface name. Let's look at some code. 
 
 ```kotlin
  @Test
@@ -116,8 +123,10 @@ Once we have a marker interface, it is trivial to add them as categories. We jus
      
      assertEquals("Conversion from celsius to fahrenheit failed",
          expected.toDouble(), actual.toDouble(), 0.001)
+ }
 ```
-We can even add multiple categories or categories at class level like this 
+We can add many categories to single method or add categories at class level. 
+
 ```kotlin
  @Category(FastTests::class)  
  class ConverterUtilTest {
@@ -129,7 +138,10 @@ We can even add multiple categories or categories at class level like this
 ```
 
 ### Running the category tests
-Android gradle plugin doesn't support running the category tests easily. To get this annotation work we need to use a custom gradle task.  Let's look at some code to execute a test with category `roboelectric`
+There is no easy way to run category tests on Android. We can add support for Categories in Android gradle plugin by writing custom gradle code.
+
+Let's look at the code to execute tests with category `robolectric`
+
 ```groovy
 if (project.gradle.startParameter?.taskRequests?.args[0]?.remove("--robolectric")) {
     subprojects
@@ -138,34 +150,35 @@ if (project.gradle.startParameter?.taskRequests?.args[0]?.remove("--robolectric"
             .withType(Test)
             .configureEach {
                 useJUnit {
-                    includeCategories 'com.dexterapps.testsharding.RoboElectricTests'
+                    includeCategories 'com.dexterapps.testsharding.RobolectricTests'
                     //excludeCategories if we want to exclude any test
                 }
             }
 }
 ```
-We need to add this code to root `build.gradle` file to make it work for a module with the name _app_. If you have multiple modules, you need to change the find block. 
+We need to add this code to root `build.gradle` file to make it work for `app` module. For a multi-module project, we need to add support of all modules one by one with module names. 
 
-With this gradle code, we check if the command has `--robolectric` parameter. If it does, we look for the Junit task and add `includeCategories` for all test that has Category `com.dexterapps.testsharding.RoboElectricTests` all other tests would not be excluded. We can also use `excludeCategories `to do the reverse. 
+This gradle code checks if any `Test` task is executed with `--robolectric` parameter. If we find this parameter we will *include* all tests with Category  `com.dexterapps.testsharding.RobolectricTests` for JUnit tasks and ignore others test. We can also use `excludeCategories` to do the reverse. 
 
-Once this task is added, we can easily run Unit test with `@Category(RoboElectricTests::class)` using following command. 
-```
+To run Unit tests with `@Category(RobolectricTests::class)` using following command. 
+```shell
 ./gradlew :app:testDebugUnitTest --robolectric
 ```
-Similarly we can run other test like 
-```
+Similarly we can run other *category tests* with
+```shell
 ./gradlew :app:testDebugUnitTest --unit
 or
-/gradlew :app:testDebugUnitTest --fasttest
+./gradlew :app:testDebugUnitTest --fasttest
 ```
 
+### Results
+*JUnit Categories* enabled us to divide and run multiple test jobs in parallel. Before `Categories` our test execution time was **5 min**. With `Categories` and parallel jobs, it takes only **3 min** (Unit Test 2 min, Robolectric 3 min) giving us **~40%** savings in test execution time. 
+
 ### Wrap up
+Concept of test **sharding** is not new in android. UI testing frameworks like [Spoon](https://square.github.io/spoon/) or [Flank](https://github.com/TestArmada/flank) supported it for a long time. But sharding for a unit testing is non-existing. 
 
-Sharding is not a new concept and people are doing it in UI testing by using tools like [Spoon](https://square.github.io/spoon/) or [Flank](https://github.com/TestArmada/flank) for a long time. But with the increasing use of RoboElectric and other JVM based test, it is beneficial to shard Unit tests and run them in parallel. 
+This post covered the use of  **JUnit Categories** and custom gradle code to break unit tests into different categories and run them in parallel. We achieved **~40%** improvement in test execution time and improved developer productivity. 
 
-In this post, we saw how we can take advantage of **Junit Categories** to shard our unit test and run them using a custom gradle command. 
+I created a sample android app that shard unit tests into 3 different categories. You can find the complete source code at **[https://github.com/pranayairan/android-unit-test-sharding](https://github.com/pranayairan/android-unit-test-sharding)**
 
-I created a sample app that shard unit tests into 3 different categories. You can find the complete source code at  [https://github.com/pranayairan/android-unit-test-sharding](https://github.com/pranayairan/android-unit-test-sharding)
-
-_I would like to give shot out to my Colleague [Martin Feldsztejn](https://github.com/martofeld) who wrote the custom gradle command to get categories to work in android. I would also like to thanks Sriram Santosh for proofreading this and providing his feedback_
-
+_I would like to give shot out to my Colleague [Martin Feldsztejn](https://github.com/martofeld) who wrote the custom gradle command to get categories to work in android. I would also like to thanks [Sriram Santosh](https://github.com/sriramsantosh) for proofreading this and providing his feedback_
