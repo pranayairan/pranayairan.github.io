@@ -9,7 +9,7 @@ google_analytics: ''
 disqus: 'prandroid-1'
 mailchimp-list: 'https://gmail.us20.list-manage.com/subscribe?u=499f86355673c4cffea1a7a02&id=aa9195ed36'
 include: ["_pages"]
-permalink: /:title/
+permalink: :title/
 
 # Authors
 authors:
