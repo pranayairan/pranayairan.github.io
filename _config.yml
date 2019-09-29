@@ -11,6 +11,11 @@ mailchimp-list: 'https://gmail.us20.list-manage.com/subscribe?u=499f86355673c4cf
 include: ["_pages"]
 permalink: /:title/
 
+# Twitter
+twitter:
+  username: pranayairan
+  card: summary_large_image
+
 # Authors
 authors:
   pranay:
