@@ -172,7 +172,7 @@ or
 ```
 
 ### Results
-*JUnit Categories* enabled us to divide and run multiple test jobs in parallel. Before `Categories` our test execution time was **5 min**. With `Categories` and parallel jobs, it takes only **3 min** (Unit Test 2 min, Robolectric 3 min) giving us **~40%** savings in test execution time. 
+**JUnit Categories** enabled us to divide and run multiple test jobs in parallel. Before `Categories` our test execution time was **5 min**. With `Categories` and parallel jobs, it takes only **3 min** (Unit Test 2 min, Robolectric 3 min) giving us **~40%** savings in test execution time. 
 
 ### Wrap up
 Concept of test **sharding** is not new in android. UI testing frameworks like [Spoon](https://square.github.io/spoon/) or [Flank](https://github.com/TestArmada/flank) supported it for a long time. But sharding for a unit testing is non-existing. 
