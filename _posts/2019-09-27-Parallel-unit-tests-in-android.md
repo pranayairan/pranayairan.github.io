@@ -25,7 +25,7 @@ JVM tests usually run super fast but on android, all unit test runs **Sequential
 
 With project [Nitrogen](https://medium.com/androiddevelopers/write-once-run-everywhere-tests-on-android-88adb2ba20c5), Robolectric tests are now supported in the Android X testing library. Robolectric tests run on JVM and are faster then espresso tests. But since they depend on simulated android env they are slower than vanilla JUnit tests.
 
-Combining Robolectric and JUnit test makes test execution slow and can impact build time and developer productivity. Gradle has support for executing tests in parallel using a custom setting like this: 
+Combining Robolectric and JUnit tests makes test execution slow and can impact build time and developer productivity. Gradle has support for executing tests in parallel using a custom setting like this: 
 
    ``` groovy
 tasks.withType(Test) {
@@ -111,8 +111,13 @@ interface FastTests
 
 interface SlowTests
 ``` 
+
+> Note: JUnit categories can take any class name as a category, it is
+> not required to create custom interfaces. We can use any predefine
+> classes as well to categorized.
+
 ### Category Example
-Once we have marker interfaces, it is trivial to add them as categories. To categorize a test annotate it with `@category` annotation and add interface name. Let's look at some code. 
+Once we have marker interfaces, it is trivial to add them as categories. To categorize a test annotate it with `@Category` annotation and add interface name. Let's look at some code. 
 
 ```kotlin
  @Test
@@ -137,28 +142,34 @@ We can add many categories to single method or add categories at class level.
  }
 ```
 
+> `@Category` annotation is part of JUnit experiemental package
+> `org.junit.experimental.categories.Category` 
+
 ### Running the category tests
-There is no easy way to run category tests on Android. We can add support for Categories in Android gradle plugin by writing custom gradle code.
+There is no easy way to run category tests on Android. We can add support for Categories in the Android gradle plugin by writing custom gradle code.
 
 Let's look at the code to execute tests with category `robolectric`
 
 ```groovy
 if (project.gradle.startParameter?.taskRequests?.args[0]?.remove("--robolectric")) {
-    subprojects
-            .find { it.name == "app" }
-            .tasks
-            .withType(Test)
-            .configureEach {
-                useJUnit {
-                    includeCategories 'com.dexterapps.testsharding.RobolectricTests'
-                    //excludeCategories if we want to exclude any test
+    for (Project project : subprojects) {
+        project.tasks
+                .withType(Test)
+                .configureEach {
+                    useJUnit {
+                        includeCategories 'com.dexterapps.testsharding.RobolectricTests'
+                        //excludeCategories if we want to exclude any test
+                    }
                 }
-            }
+    }
 }
 ```
-We need to add this code to root `build.gradle` file to make it work for `app` module. For a multi-module project, we need to add support of all modules one by one with module names. 
+We need to add this code to root `build.gradle` file to make it work for `all` modules. We can also enable it for specific module. To enable for specific module check [this code](https://github.com/pranayairan/android-unit-test-sharding/blob/master/build.gradle#L72)
 
-This gradle code checks if any `Test` task is executed with `--robolectric` parameter. If we find this parameter we will *include* all tests with Category  `com.dexterapps.testsharding.RobolectricTests` for JUnit tasks and ignore others test. We can also use `excludeCategories` to do the reverse. 
+Let's walk through this code line by line. 
+
+ 1. First, we check if a gradle command is executed with the `--robolectric` parameter. If yes we remove the parameter and proceed. We need to call remove because `--robolectric` is a custom parameter and gradle doesn't understand it. 
+ 2. If we find this parameter we will instruct JUnit to *include* all tests with Category  `com.dexterapps.testsharding.RobolectricTests` and ignore other tests. We can also use `excludeCategories` to do the reverse. 
 
 To run Unit tests with `@Category(RobolectricTests::class)` using following command. 
 ```shell
@@ -175,7 +186,7 @@ or
 **JUnit Categories** enabled us to divide and run multiple test jobs in parallel. Before `Categories` our test execution time was **5 min**. With `Categories` and parallel jobs, it takes only **3 min** (Unit Test 2 min, Robolectric 3 min) giving us **~40%** savings in test execution time. 
 
 ### Wrap up
-Concept of test **sharding** is not new in android. UI testing frameworks like [Spoon](https://square.github.io/spoon/) or [Flank](https://github.com/TestArmada/flank) supported it for a long time. But sharding for a unit testing is non-existing. 
+The concept of test **sharding** is not new in android. UI testing frameworks like [Spoon](https://square.github.io/spoon/) or [Flank](https://github.com/TestArmada/flank) supported it for a long time. But sharding for a unit testing is non-existing. 
 
 This post covered the use of  **JUnit Categories** and custom gradle code to break unit tests into different categories and run them in parallel. We achieved **~40%** improvement in test execution time and improved developer productivity. 
 
