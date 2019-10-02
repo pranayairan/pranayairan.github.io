@@ -114,7 +114,7 @@ interface SlowTests
 
 > Note: JUnit categories can take any class name as a category, it is
 > not required to create custom interfaces. We can use any predefine
-> classes as well to categorized.
+> classes as well to categorize tests.
 
 ### Category Example
 Once we have marker interfaces, it is trivial to add them as categories. To categorize a test annotate it with `@Category` annotation and add interface name. Let's look at some code. 
